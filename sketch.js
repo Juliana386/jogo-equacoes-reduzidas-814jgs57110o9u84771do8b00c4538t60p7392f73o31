@@ -18,77 +18,66 @@ let timerErro = 0;
 let fases = []; 
 let confetes = []; 
 
-let cnv; // Variável para armazenar a janela do jogo
-
 function setup() {
-  // 1. CRIAMOS A JANELA DO JOGO E GUARDAMOS NA VARIÁVEL 'cnv'
-  cnv = createCanvas(800, 650);
+  createCanvas(800, 650);
   
-  // 2. CHAMAMOS A FUNÇÃO QUE CENTRALIZA O JOGO NA TELA DO NAVEGADOR
-  centralizarJanelaDoJogo();
+  // --- A MÁGICA DA CENTRALIZAÇÃO E FUNDO ESCURO ---
+  // Isso força o navegador a pintar a tela toda de escuro e colocar o jogo no meio!
+  document.body.style.margin = "0";
+  document.body.style.padding = "0";
+  document.body.style.backgroundColor = "#0A0A1A"; // Fundo da página escuro
+  document.body.style.display = "flex";
+  document.body.style.justifyContent = "center";
+  document.body.style.alignItems = "center";
+  document.body.style.minHeight = "100vh";
+  // ------------------------------------------------
 
   textAlign(CENTER, CENTER);
   textFont('Verdana');
   
   carregarRanking(); 
 
-  // Fundo animado temático (Cores mais frias e elegantes)
-  for(let i=0; i<25; i++) {
+  // Fundo animado temático (ESPAÇO NEON)
+  for(let i=0; i<30; i++) {
     decoracoes.push({
       x: random(width), y: random(height),
-      velY: random(-0.5, -1.5), velRot: random(-0.05, 0.05), rot: random(TWO_PI),
-      simbolo: random(['x²', 'x', '±', '√', '0', '=']),
-      tam: random(20, 45), cor: color(random(100, 150), random(120, 180), random(220, 255), 140)
+      velY: random(-0.5, -2.0), velRot: random(-0.05, 0.05), rot: random(TWO_PI),
+      simbolo: random(['x²', 'x', '±', '√', '0', '=', '÷', '+']),
+      tam: random(20, 50), 
+      cor: random(['#00E5FF', '#FF007F', '#B388FF', '#00E676', '#FFEA00']) 
     });
   }
   
-  // Estilo Premium do Input (Caixa de Texto)
+  // Estilo do Input (Caixa de Texto Gamer)
   inputNome = createInput("");
-  // Ajuste leve na posição para alinhar com o novo layout centralizado
-  inputNome.position(width / 2 - 140, height / 2 + 15); 
+  inputNome.position(width / 2 - 140, height / 2 + 20);
   inputNome.size(280, 40);
   inputNome.style('font-family', 'Verdana');
   inputNome.style('font-size', '18px');
   inputNome.style('text-align', 'center');
-  inputNome.style('border-radius', '25px');
-  inputNome.style('border', '2px solid #7E57C2'); 
-  inputNome.style('background', '#F8F9FA');
-  inputNome.style('color', '#311B92');
+  inputNome.style('border-radius', '8px');
+  inputNome.style('border', '2px solid #00E5FF'); 
+  inputNome.style('background', '#0B0C10'); 
+  inputNome.style('color', '#00E5FF'); 
   inputNome.style('outline', 'none');
+  inputNome.style('box-shadow', '0 0 10px rgba(0, 229, 255, 0.4)');
   
-  // Estilo Moderno do Botão (Degradê Roxo/Azul)
+  // Estilo do Botão Modernizado
   btnComecar = createButton("🚀 COMEÇAR A AVENTURA!");
-  btnComecar.position(width / 2 - 140, height / 2 + 75);
+  btnComecar.position(width / 2 - 140, height / 2 + 80);
   btnComecar.mousePressed(iniciarJogo);
-  btnComecar.style('background', 'linear-gradient(135deg, #667EEA 0%, #764BA2 100%)');
+  btnComecar.style('background', 'linear-gradient(90deg, #FF007F 0%, #7000FF 100%)');
   btnComecar.style('color', 'white');
   btnComecar.style('font-family', 'Verdana');
-  btnComecar.style('font-weight', 'bold');
+  btnComecar.style('font-weight', '900');
   btnComecar.style('font-size', '15px');
-  btnComecar.style('border', 'none');
+  btnComecar.style('border', '2px solid #FFFFFF');
   btnComecar.style('border-radius', '25px');
-  btnComecar.style('padding', '14px 20px');
+  btnComecar.style('padding', '12px 20px');
   btnComecar.style('width', '280px');
   btnComecar.style('cursor', 'pointer');
-}
-
-// --- FUNÇÃO PEDAGÓGICA: CENTRALIZAÇÃO AUTOMÁTICA ---
-// Esta função calcula onde o jogo deve ficar para estar sempre no meio da tela do aluno.
-function centralizarJanelaDoJogo() {
-  let x = (windowWidth - width) / 2;
-  let y = (windowHeight - height) / 2;
-  cnv.position(x, y);
-  
-  // IMPORTANTE: Removemos o branco do fundo da página inteira!
-  // Definimos a cor do fundo da página (body) para combinar com o jogo.
-  document.body.style.background = "#EBF1F5"; 
-  document.body.style.margin = "0"; // Remove margens chatas do navegador
-  document.body.style.overflow = "hidden"; // Previne barras de rolagem
-}
-
-// Essa função faz o jogo se reajustar se o aluno girar o celular ou redimensionar a janela
-function windowResized() {
-  centralizarJanelaDoJogo();
+  btnComecar.style('box-shadow', '0px 0px 15px rgba(255, 0, 127, 0.8)'); 
+  btnComecar.style('text-shadow', '1px 1px 2px rgba(0,0,0,0.5)');
 }
 
 // --- SISTEMA DE RANKING LOCAL ---
@@ -221,17 +210,19 @@ function draw() {
 }
 
 function desenharFundoAnimado() {
-  background("#EBF1F5"); 
+  background("#0A0A1A"); 
   for(let d of decoracoes) {
     push(); translate(d.x, d.y); rotate(d.rot);
-    fill(d.cor); noStroke(); textSize(d.tam); textStyle(BOLD); text(d.simbolo, 0, 0); pop();
+    let c = color(d.cor);
+    c.setAlpha(150); 
+    fill(c); noStroke(); textSize(d.tam); textStyle(BOLD); text(d.simbolo, 0, 0); pop();
     d.y += d.velY; d.rot += d.velRot;
     if(d.y < -50) d.y = height + 50; 
   }
 }
 
 function desenharFolhaCaderno() {
-  rectMode(CENTER); fill(255, 255, 255, 240); stroke("#90CAF9"); strokeWeight(3);
+  rectMode(CENTER); fill(255, 255, 255, 245); stroke("#00E5FF"); strokeWeight(4);
   rect(width/2, 230, 680, 320, 20); 
   stroke(200, 220, 255, 150); strokeWeight(2);
   for(let y = 135; y < 380; y += 40) line(width/2 - 320, y, width/2 + 320, y);
@@ -240,22 +231,26 @@ function desenharFolhaCaderno() {
 function telaInicial() {
   desenharFundoAnimado();
   
-  // Sombras Suaves em Camadas
-  fill(0, 0, 0, 10); noStroke(); rectMode(CENTER); 
-  rect(width/2, height/2 - 40, 620, 250, 30);
-  fill(0, 0, 0, 15);
-  rect(width/2, height/2 - 45, 620, 250, 30);
+  fill(15, 15, 35, 220); 
+  stroke("#FF007F"); 
+  strokeWeight(3);
+  rectMode(CENTER);
+  rect(width/2, height/2 - 30, 660, 260, 25);
+  noStroke();
+
+  // Diminuí a fonte de 34 para 28 para NÃO CORTAR o título
+  fill("#FF007F"); 
+  textSize(28); textStyle(BOLD); 
+  text("MESTRE DAS EQUAÇÕES REDUZIDAS", width / 2 + 2, height / 2 - 100 + 2);
   
-  // Caixa Principal
-  fill(255); rect(width/2, height/2 - 50, 620, 250, 30);
+  fill("#FFFFFF"); 
+  text("MESTRE DAS EQUAÇÕES REDUZIDAS", width / 2, height / 2 - 100);
   
-  // Título com cor Índigo Profunda
-  fill("#311B92"); textSize(34); textStyle(BOLD); 
-  text("Mestre das Equações Reduzidas 🧩", width / 2, height / 2 - 105);
-  
-  // Subtítulo elegante
-  textStyle(NORMAL); fill("#5E35B1"); textSize(18);
-  text("Digite seu nome para começar o treinamento:", width / 2, height / 2 - 45);
+  fill("#FFEA00"); textSize(22);
+  text("O TREINAMENTO FINAL!", width / 2, height / 2 - 50);
+
+  fill(220); textSize(16); textStyle(NORMAL);
+  text("DIGITE SEU NOME PARA RESOLVER 15 DESAFIOS:", width / 2, height / 2 - 10);
 }
 
 function iniciarJogo() {
@@ -268,24 +263,25 @@ function iniciarJogo() {
 }
 
 function desenharHUD() {
-  fill(255, 255, 255, 230); noStroke(); rectMode(CORNER); rect(0, 0, width, 55); rectMode(CENTER);
+  fill(15, 15, 35, 230); stroke("#00E5FF"); strokeWeight(2);
+  rectMode(CORNER); rect(-5, -5, width+10, 60); rectMode(CENTER); noStroke();
   
-  fill(50); textSize(20); textStyle(BOLD); textAlign(LEFT); text("✏️ " + nomeAluno, 20, 28);
+  fill("#FFFFFF"); textSize(20); textStyle(BOLD); textAlign(LEFT); text("🧑‍🚀 " + nomeAluno, 20, 28);
   textAlign(CENTER);
-  if (faseAtual >= 10) fill("#D84315"); else fill(50);
-  text("Fase: " + (faseAtual + 1) + " / 15", width / 2 - 40, 28);
+  if (faseAtual >= 10) fill("#FFEA00"); else fill("#00E5FF");
+  text("NÍVEL: " + (faseAtual + 1) + " / 15", width / 2 - 40, 28);
   
-  fill("#1565C0"); let m = floor(tempoJogo / 60); let s = tempoJogo % 60;
-  text("⏳ " + nf(m, 2) + ":" + nf(s, 2), width / 2 + 80, 28);
+  fill("#00E676"); let m = floor(tempoJogo / 60); let s = tempoJogo % 60;
+  text("⏳ " + nf(m, 2) + ":" + nf(s, 2), width / 2 + 100, 28);
   
-  textAlign(RIGHT); fill("#D32F2F"); text("Vidas: " + "❤️".repeat(vidas), width - 20, 28);
+  textAlign(RIGHT); fill("#FF007F"); text("Vidas: " + "❤️".repeat(vidas), width - 20, 28);
   textAlign(CENTER); textStyle(NORMAL);
 }
 
 function desenharEquacoes() {
   let f = fases[faseAtual];
   
-  fill(30); noStroke(); textSize(42); textStyle(BOLD);
+  fill(20); noStroke(); textSize(42); textStyle(BOLD);
   text(f.eqTxt, width/2, 110);
 
   if (passo >= 1) { fill(f.cor); textSize(32); textStyle(BOLD); text(f.passos[0].c, width/2, 190); }
@@ -295,18 +291,17 @@ function desenharEquacoes() {
 }
 
 function desenharPainelAcao() {
-  fill(255); stroke("#90CAF9"); strokeWeight(4); rectMode(CORNER);
+  fill(15, 15, 35, 240); stroke("#00E5FF"); strokeWeight(4); rectMode(CORNER);
   rect(-10, 400, width + 20, 260, 30); rectMode(CENTER); 
   
-  let f = fases[faseAtual]; fill(50); noStroke(); textSize(22);
+  let f = fases[faseAtual]; fill(255); noStroke(); textSize(22);
   
   if (timerErro > 0) {
-    fill("#D32F2F"); textStyle(BOLD); 
+    fill("#FF007F"); textStyle(BOLD); 
     text("❌ Ops! " + f.passos[passo].dica, width/2, 430);
     textStyle(NORMAL); timerErro--;
   }
   
-  fill(30);
   if (passo < 3) {
     let pAtual = f.passos[passo];
     if (timerErro === 0) text(pAtual.perg, width/2, 450);
@@ -314,7 +309,6 @@ function desenharPainelAcao() {
     let ordem = (faseAtual + passo) % 3;
     let corBtn = f.cor;
     
-    // Botões mais largos e melhor distribuídos
     if (ordem === 0) { 
       criarBotao(pAtual.c, width/2 - 255, 540, true, corBtn, 240); 
       criarBotao(pAtual.e1, width/2, 540, false, corBtn, 240); 
@@ -330,8 +324,8 @@ function desenharPainelAcao() {
     }
   } 
   else if (passo === 3) {
-    fill("#2E7D32"); textStyle(BOLD); text("🎉 PERFEITO! Raízes encontradas.", width/2, 450); textStyle(NORMAL);
-    criarBotao("IR PARA PRÓXIMA FASE ➡️", width/2, 540, "proxima", "#4CAF50", 350);
+    fill("#00E676"); textStyle(BOLD); text("🎉 PERFEITO! Raízes encontradas.", width/2, 450); textStyle(NORMAL);
+    criarBotao("AVANÇAR DE NÍVEL ➡️", width/2, 540, "proxima", "#00C853", 350);
   }
 }
 
@@ -375,14 +369,14 @@ function mousePressed() {
 }
 
 function telaGameOver() {
-  background(30);
-  fill("#D32F2F"); textSize(60); textStyle(BOLD); text("GAME OVER", width/2, height/2 - 60);
+  background("#0A0A1A");
+  fill("#FF007F"); textSize(60); textStyle(BOLD); text("GAME OVER", width/2, height/2 - 60);
   fill(255); textSize(22); textStyle(NORMAL);
   text("Suas vidas acabaram.\nLembre-se: \n• Fatoração: Coloque o 'x' em evidência.\n• Raízes: Isole o x² e não esqueça do ±.\n\nToque na tela para recomeçar.", width/2, height/2 + 50);
 }
 
 function telaVitoria() {
-  background("#0D47A1");
+  background("#0A0A1A"); 
   
   for(let p of confetes) {
     push(); translate(p.x, p.y); rotate(p.rot);
@@ -392,16 +386,16 @@ function telaVitoria() {
     if(p.y > height + 20) { p.y = random(-50, -10); p.x = random(width); }
   }
   
-  fill(0, 0, 0, 100); textSize(36); textStyle(BOLD); text("🏆 MESTRE DA EQUAÇÃO REDUZIDA! 🏆", width/2 + 3, 73);
-  fill("#FFD700"); text("🏆 MESTRE DA EQUAÇÃO REDUZIDA! 🏆", width/2, 70);
+  fill("#FF007F"); textSize(28); textStyle(BOLD); text("🏆 MESTRE DA EQUAÇÃO REDUZIDA! 🏆", width/2 + 2, 72);
+  fill("#FFEA00"); text("🏆 MESTRE DA EQUAÇÃO REDUZIDA! 🏆", width/2, 70);
   
   fill(255); textSize(20); textStyle(NORMAL);
-  text("Parabéns " + nomeAluno + "! Seu tempo foi: ⏳ " + tempoFinalFormatado, width/2, 130);
+  text("Missão Cumprida, " + nomeAluno + "! Seu tempo foi: ⏳ " + tempoFinalFormatado, width/2, 130);
   
-  fill(255, 255, 255, 20); stroke("#64B5F6"); strokeWeight(2); rectMode(CENTER);
+  fill(15, 15, 35, 230); stroke("#00E5FF"); strokeWeight(3); rectMode(CENTER);
   rect(width/2, 330, 450, 280, 20);
   
-  noStroke(); fill("#90CAF9"); textSize(28); textStyle(BOLD);
+  noStroke(); fill("#00E5FF"); textSize(28); textStyle(BOLD);
   text("🏅 QUADRO DE MEDALHAS 🏅", width/2, 220);
   
   textStyle(NORMAL); textSize(22);
@@ -410,7 +404,7 @@ function telaVitoria() {
     let yPos = 270 + (i * 40);
     
     if (r.nome === nomeAluno && r.tempo === tempoJogo) { 
-      fill("#69F0AE"); textStyle(BOLD); 
+      fill("#00E676"); textStyle(BOLD); 
     } else { 
       fill(255); textStyle(NORMAL); 
     }
